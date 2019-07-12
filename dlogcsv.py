@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import csv
@@ -24,14 +24,14 @@ def format_header_info(header: Dlog.Body.Header) -> list:
     sample_rate = decimal.Decimal(header.sample_rate)
     delay = decimal.Decimal(header.delay)
 
-    info = [f'log format: {header.dlog_format.name}',
-            f'stop reason: {header.stop_reason.name}',
-            f'number of samples: {header.num_samples}',
-            f'voltage units: {voltage_scale}',
-            f'sample rate: {sample_rate.normalize().to_eng_string()} Sa/s',
-            f'delay: {delay.normalize().to_eng_string()} s',
-            f'number of channels: {header.num_channels}',
-            f'channel map: {header.channel_map[:header.num_channels]}']
+    info = ['log format: {x}'.format(x = header.dlog_format.name),
+            'stop reason: {x}'.format(x = header.stop_reason.name),
+            'number of samples: {x}'.format(x = header.num_samples),
+            'voltage units: {x}'.format(x = voltage_scale),
+            'sample rate: {x} Sa/s'.format(x = sample_rate.normalize().to_eng_string()),
+            'delay: {x} s'.format(x = delay.normalize().to_eng_string()),
+            'number of channels: {x}'.format(x = header.num_channels),
+            'channel map: {x}'.format(x = header.channel_map[:header.num_channels])]
 
     return info
 
@@ -74,11 +74,14 @@ def main():
     timestamped_data = ([i/header.sample_rate, *s.channel]
                         for i, s in enumerate(dlog.body.data.samples))
 
-    log_header = column_header = None
+    column_header = None
+    log_header = []
     if not args.no_csv_log_header:
         # extract the header fields (all public attributes)
-        log_header = [f'{f}={v}' for f, v in vars(header).items() if not
-                      f.startswith('_')]
+        for f, v in vars(header).items():
+            if not f.startswith('_'):
+                log_header += ['{f}={v}'.format(f=f, v=v)]
+
     if not args.no_csv_column_header:
         column_header = ['Time'] + ['Channel ' + str(c) for c in
                                     header.channel_map[:header.num_channels]]
