@@ -15,7 +15,7 @@ This project uses the awesome [Kaitai Struct](https://kaitai.io) project to defi
 
 ### Prerequisites
 
-* Python 3
+* Python 3.6 as f-strings are used
 * [Kaitai Struct](https://kaitai.io), v0.9 runtime for Python
 * optional: the Kaitai Struct Compiler
 
